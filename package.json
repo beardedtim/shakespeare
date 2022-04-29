@@ -1,0 +1,11 @@
+{
+  "name": "@mck-p/shakespeare-mono",
+  "version": "0.0.0-DEVELOPMENT-0.0",
+  "description": "An Actor Framework for Node.js",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "ava"
+  },
+  "author": "Tim Roberts <tim@mck-p.com>",
+  "license": "MIT"
+}
