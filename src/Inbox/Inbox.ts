@@ -75,7 +75,7 @@ export class IntervalInbox<OutputType = any>
    * You can optiexport * from "./Inbox";ing more domain-specific without
    * having to re-write this
    */
-  constructor(optionalMapper?: (input: number) => OutputType) {
+  constructor(timeout = 10, optionalMapper?: (input: number) => OutputType) {
     this.#mapper = optionalMapper ?? ((input: any) => input);
 
     this.#inbox = new Inbox<OutputType>({
@@ -83,7 +83,7 @@ export class IntervalInbox<OutputType = any>
         let i = 0;
         this.#interval = setInterval(() => {
           cb(this.#mapper(i++));
-        });
+        }, timeout);
       },
       disconnect: () => {
         this.#interval && clearInterval(this.#interval);
