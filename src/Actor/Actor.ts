@@ -19,6 +19,13 @@ export interface ActorConfig<MessageType, Repository> {
 }
 const noopRepository = () => ({});
 
+export interface ActorInterface<MessageType, Repository> {
+  data: Repository;
+  start: () => Promise<void>;
+  stop: () => Promise<void>;
+  send: (message: MessageType) => Promise<void>;
+}
+
 /**
  *
  * https://en.wikipedia.org/wiki/Actor_model
@@ -43,7 +50,9 @@ const noopRepository = () => ({});
  * network."
  *
  */
-export class Actor<MessageType = any, Repository = any> {
+export class Actor<MessageType = any, Repository = any>
+  implements ActorInterface<MessageType, Repository>
+{
   #inbox: InboxInterface<MessageType>;
   #processor: ActorMessageProcessor<MessageType>;
   #internalMessageSubscription?: Subscription;
@@ -59,16 +68,19 @@ export class Actor<MessageType = any, Repository = any> {
     return this.#repository;
   }
 
+  #processMessage(message: MessageType): Promise<void> {
+    return this.#processor({
+      payload: message,
+      self: this,
+    });
+  }
+
   async start() {
     if (!this.#internalMessageSubscription) {
       await this.#inbox.connect();
 
       this.#internalMessageSubscription = this.#inbox.message$.subscribe(
-        (message) =>
-          this.#processor({
-            payload: message,
-            self: this,
-          })
+        this.send.bind(this)
       );
     }
   }
@@ -79,6 +91,10 @@ export class Actor<MessageType = any, Repository = any> {
     if (this.#internalMessageSubscription) {
       this.#internalMessageSubscription.unsubscribe();
     }
+  }
+
+  async send(message: MessageType) {
+    return this.#processMessage(message);
   }
 }
 

@@ -29,6 +29,7 @@ export interface InboxInterface<MessageType> {
 export class Inbox<MessageType> implements InboxInterface<MessageType> {
   #subject: Subject<MessageType>;
   message$: Observable<MessageType>;
+
   #log: typeof Log;
 
   #connectToSource: InboxConnection<MessageType>;
