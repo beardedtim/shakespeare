@@ -1,0 +1,5 @@
+namespace: shakespeare
+
+resources:
+  - ./common
+  - ./kafka
