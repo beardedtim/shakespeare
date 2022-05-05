@@ -1,5 +1,5 @@
 import type { Observable } from "rxjs";
-import type { Consumer } from "kafkajs";
+import type { Consumer, EachMessagePayload } from "kafkajs";
 
 import { Kafka } from "kafkajs";
 import { Log } from "@app/Shared";
@@ -74,18 +74,22 @@ export class KafkaInbox<MessageType> implements InboxInterface<MessageType> {
           });
 
           await this.#consumingClient.run({
-            eachMessage: async ({ topic, partition, message }) =>
-              cb({
-                payload: {
-                  topic,
-                  partition,
-                  message: {
-                    raw: message,
-                    offest: message.offset,
-                    text: message.value?.toString(),
-                  },
+            eachMessage: async ({
+              topic,
+              partition,
+              message,
+            }: EachMessagePayload) => {
+              const createdMessage = {
+                topic,
+                partition,
+                message: {
+                  offest: message.offset,
+                  text: message.value?.toString(),
                 },
-              } as unknown as MessageType),
+              } as unknown as MessageType;
+
+              return cb(createdMessage);
+            },
           });
         } else {
           this.#log.debug(

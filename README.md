@@ -130,3 +130,15 @@ export class IntervalInbox<OutputType = any>
   }
 }
 ```
+
+### Development
+
+```sh
+# Start minikube
+minikube start
+# Apply infra to cluster
+# if this fails due to
+# error: unable to recognize "./k8s": no matches for kind "Kafka" in version "kafka.strimzi.io/v1beta2"
+# it's okay. do it again once the operator starts
+kubectl apply -k ./k8s
+```

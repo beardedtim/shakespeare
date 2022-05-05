@@ -7,7 +7,7 @@ const main = async () => {
     inbox: new KafkaInbox({
       connection: {
         clientId: "example-kafka-client",
-        brokers: ["broker:1", "broker:2"],
+        brokers: [],
       },
       consumer: {
         groupId: "some-group-id",

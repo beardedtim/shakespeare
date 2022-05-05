@@ -3,3 +3,4 @@ namespace: shakespeare
 resources:
   - ./common
   - ./kafka
+  - ./shakespeare

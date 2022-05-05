@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shakespeare
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: shakespeare
+  template:
+    metadata:
+      labels:
+        name: shakespeare
+    spec:
+      containers:
+        - name: shakespeare
+          image: shakespeare:latest
+          # patch this to pull in stg/production
+          imagePullPolicy: Never
+          env:
+            - name: PORT
+              value: "5000"
